@@ -71,6 +71,11 @@
     <script src="{{ asset("/assets/js/height-equal.js") }}"></script>
     <script src="{{ asset("/assets/js/script.js") }}"></script>
 
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+
+<!-- DataTables JavaScript -->
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
 
     <script src="{{ asset("/assets/js/sweet-alert/sweetalert.min.js") }}"></script>
     <script src="{{ asset("/assets/js/sweet-alert/app.js") }}"></script>

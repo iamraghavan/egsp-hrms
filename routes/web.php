@@ -17,12 +17,24 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/add/add-employee', [PageController::class, 'add_employee'])->name('pages.add-employee');
     Route::post('/add/employee', [EmployeeController::class, 'addEmployee']);
     Route::get('/employee/calculate-salary', [PageController::class, 'calculate_salary'])->name('pages.calculate');
+    Route::get('/employee/edit/{emp_id}', [PageController::class, 'editEmployee'])->name('employee.edit');
+    Route::put('/employee/update/{emp_id}', [EmployeeController::class, 'update']);
 
+    Route::get('/employee/calculate/salary/{emp_id}', [PageController::class, 'salaryView'])->name('pages.salary-calculate');
+
+
+    // Route::any('/employee/calculate/salary/{emp_id}', [PageController::class, 'salaryCalcualte'])->name('pages.salary');
+
+    Route::get('/employee/delete/{emp_id}', [EmployeeController::class, 'deleteEmployeeData']);
+    Route::any('/get/employee', [EmployeeController::class, 'getEmployee'])->name('get.employee');
+    Route::get('/get-faculty-names', [EmployeeController::class, 'getFacultyNames'])->name('get.faculty.names');
 });
 
 
 
-Route::get('/get-faculty-names', [EmployeeController::class, 'getFacultyNames'])->name('get.faculty.names');
-Route::get('/get-employee-details', [EmployeeController::class, 'getEmployeeDetails'])->name('get.employee.details');
+
+
+// Route::get('/get-employee-details', [EmployeeController::class, 'getEmployeeDetails'])->name('get.employee.details');
+
 // In routes/web.php
 // Route::post('/add/employee', [EmployeeController::class, 'store']);

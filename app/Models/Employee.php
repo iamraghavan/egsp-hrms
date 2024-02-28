@@ -20,7 +20,7 @@ class Employee extends Model
      * @var array<int, string>
      */
 
-     protected $fillable = [
+    protected $fillable = [
         'temp_id',
         'facultyName',
         'ENGINEERINGCOURSES',
@@ -33,6 +33,8 @@ class Employee extends Model
         'ugCompleted',
         'pgCompleted',
         'phdStatus',
+        'designationID',
+        'researchPapers'
         // Add any other fillable columns
     ];
 

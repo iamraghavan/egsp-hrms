@@ -53,12 +53,13 @@
                             <div class="card-body">
 
 
+                         
 
                                 <div class="row">
                                     <div class="col">
                                         <div class="mb-3">
                                             <label>Select Engineering Course</label>
-                                            <select class="form-select" id="ENGINEERINGCOURSES" onchange="populateFacultyNames()">
+                                            <select class="form-select" id="filterByCourse" onchange="filterTable()">
                                                 <option value="" selected disabled>Select Engineering Course</option>
                                                 <optgroup label="B.E / B.Tech">
                                                     <option value="MECHANICAL">Mechanical Engineering (B.E / B.Tech)</option>
@@ -83,17 +84,54 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col">
-                                        <div class="mb-3">
-                                            <label>Select Faculty Name</label>
-                                            <select class="form-select" id="facultyName" onchange="getEmployeeDetails()">
-                                                <option value="" selected disabled>Select Faculty Name</option>
-                                                <!-- Dynamic options will be populated based on AJAX call -->
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
 
+                                    
+                                  
+
+                                   
+                                </div>
+                               
+                                <div class="table-responsive">
+                                    <table class="table table-striped text-center" id="employeeTable">
+                                        <thead>
+                                            <tr>
+                                                <th>S.No</th>
+                                                <th>Employee ID</th>
+                                                <th>Faculty Name</th>
+                                                <th>Engineering Course</th>
+                                                <th>EGSPEC Experience</th>
+                                                <th>Other College Experience</th>
+                                                <th>Total Experience</th>
+                                                <th>Date of Joining</th>
+                                                <th>Salary Experience</th>
+                                                <th>Designation</th>
+                                                {{-- <th>UG Completed</th>
+                                                <th>PG Completed</th>
+                                                <th>PhD Status</th> --}}
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Table rows will be dynamically added here -->
+                                        </tbody>
+                                    </table>
+                                    <div id="noDataMessage" class="text-center text-muted mt-3">
+                                        <img src="{{ asset('/assets/data-amico.svg') }}" alt="No Data Icon" style="max-width: 400px; height: auto;">
+                                        <p>No employee data available.</p>
+                                    </div>
+                                    
+                                
+                                </div>
+                                
+                                </div>
+                            
+                                <!-- Pagination -->
+                                <div class="mt-3">{{ $employees->links() }}</div>
+                                
+                           
+                             
+                          
+                            
     
                             
                             </div>
@@ -103,57 +141,7 @@
             </div>
 
 
-            <div id="facultyDetailsContainer" class="container-fluid" style="display: none;">
-                <div class="row product-page-main p-0">
-                    <div class="col-xxl-12 box-col-12 order-xxl-0 order-1">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="product-page-details">
-                                    <h3 id="facultyNamePlaceholder">Faculty Name</h3>
-                                </div>
-                                <div class="product-price">
-                                   <span id="dept">  </span> | <span id="emp_id"></span>
-                                </div>
-                                <hr>
-                                <div>
-                                    <table class="product-page-width">
-                                        <tbody>
-                                            <tr><td><b>Date Of Joining:</b></td><td class='align-table-end' id="dateOfJoining"></td></tr>
-                                            <tr><td><b>EGSPEC Experience:</b></td><td class="txt-success align-table-end" id="egspecExp"></td></tr>
-                                            <tr><td><b>Other College Experience:</b></td><td class='align-table-end' id="otherCollegeExp"></td></tr>
-                                            <tr><td><b>Total Experience:</b></td><td class='align-table-end' id="totalExp"></td></tr>
-                                            <tr><td><b>Salary Experience:</b></td><td class='align-table-end' id="salaryExp"></td></tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <hr>
-                            
-                                <div>
-                                    <table class="product-page-width">
-                                        <tbody>
-                                            <tr><td><b>Designation :</b></td><td class='align-table-end' id="designation"></td></tr>
-                                            <tr><td><b>UG & Status :</b></td><td class="txt-success align-table-end" id="ugCompleted"></td></tr>
-                                            <tr><td><b>PG & Status :</b></td><td class='txt-success align-table-end' id="pgCompleted"></td></tr>
-                                            <tr><td><b>Phd Status :</b></td><td class='txt-warning align-table-end' id="phdStatus"></td></tr>
-
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <hr>
-                                <form action="/calculate-salary" method="POST">
-                                    <div class="m-t-15 btn-showcase">
-                                        <button type="submit" class="btn btn-primary" name="calculateSalaryBtn">
-                                            <i class="fa fa-calculator me-1"></i>Calculate Salary
-                                        </button>
-                                    </div>
-                                </form>
-                                
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        
+     
           
     </div>
 </div>
@@ -161,92 +149,78 @@
 
 
 
-
-
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-                              
 <script>
-    function populateFacultyNames() {
-        var engineeringCourses = document.getElementById('ENGINEERINGCOURSES').value;
+    function filterTable() {
+        try {
+            var selectedCourse = document.getElementById('filterByCourse').value;
 
-        // Make an AJAX request to fetch faculty names based on selected ENGINEERINGCOURSES
-        axios.get(`/get-faculty-names?engineeringCourses=${engineeringCourses}`)
-            .then(response => {
-                // Clear existing options
-                var facultySelect = document.getElementById('facultyName');
-                facultySelect.innerHTML = '';
+            // Make an AJAX request to the server only if a course is selected
+            if (selectedCourse) {
+                $.ajax({
+                    url: '/get/employee',
+                    method: 'GET',
+                    data: { filterByCourse: selectedCourse },
+                    success: function (data) {
+                        // Clear existing table rows
+                        $('#employeeTable tbody').empty();
 
-                // Add a default option
-                var defaultOption = document.createElement('option');
-                defaultOption.value = '';
-                defaultOption.text = 'Please select the faculty name';
-                facultySelect.appendChild(defaultOption);
+                        if (data.length > 0) {
+                            // Show table and its header
+                            $('#employeeTable').show();
+                            $('#noDataMessage').hide();
 
-                // Populate options based on AJAX response
-                response.data.forEach(function (facultyName) {
-                    var option = document.createElement('option');
-                    option.value = facultyName;
-                    option.text = facultyName;
-                    facultySelect.appendChild(option);
+                            // Append new rows based on the JSON data
+                            $.each(data, function (index, employee) {
+                                var row = '<tr>' +
+                                    '<td>' + (index + 1) + '</td>' +
+                                    '<td>' + employee.temp_id + '</td>' +
+                                    '<td>' + employee.facultyName + '</td>' +
+                                    '<td>' + employee.ENGINEERINGCOURSES + '</td>' +
+                                    '<td>' + employee.egspecExp + '</td>' +
+                                    '<td>' + employee.otherCollegeExp + '</td>' +
+                                    '<td>' + employee.totalExp + '</td>' +
+                                    '<td>' + employee.dateOfJoining + '</td>' +
+                                    '<td>' + employee.salaryExp + '</td>' +
+                                    '<td>' + employee.designation + '</td>' +
+                                    '<td>' +
+                                    '<a href="/employee/edit/' + employee.temp_id + '"><button class="btn btn-sm btn-primary my-1 mx-1"><i class="fas fa-edit"></i></button></a>' +
+                                    '<a href="/employee/delete/' + employee.temp_id + '"><button class="btn btn-sm btn-danger my-1 mx-1"><i class="fas fa-trash-alt"></i></button></a>' +
+                                    '<a href="/employee/calculate/salary/' + employee.temp_id + '"><button class="btn btn-sm btn-success my-1 mx-1"><i class="fas fa-money"></i> Salary </button></a>' +
+                                    '</td>' +
+                                    '</tr>';
+
+                                // Append the row to the table
+                                $('#employeeTable tbody').append(row);
+                            });
+                        } else {
+                            // Hide table if no data and show no data message
+                            $('#employeeTable').hide();
+                            $('#noDataMessage').show();
+                        }
+                    },
+                    error: function (error) {
+                        console.log('Error fetching data: ' + JSON.stringify(error));
+                        // Handle error by showing an error message
+                        $('#employeeTable').hide();
+                        $('#noDataMessage').text('Error fetching data. Please try again later.').show();
+                    }
                 });
-            })
-            .catch(error => {
-                console.error(error);
-            });
-    }
-  
-    function getEmployeeDetails() {
-    var engineeringCourses = document.getElementById('ENGINEERINGCOURSES').value;
-    var facultyName = document.getElementById('facultyName').value;
-    var facultyDetailsContainer = document.getElementById('facultyDetailsContainer');
-    var facultyNamePlaceholder = document.getElementById('facultyNamePlaceholder');
-    var dateOfJoining = document.getElementById('dateOfJoining');
-    var egspecExp = document.getElementById('egspecExp');
-    var otherCollegeExp = document.getElementById('otherCollegeExp');
-    var totalExp = document.getElementById('totalExp');
-    var salaryExp = document.getElementById('salaryExp');
-
-    // Check if a faculty is selected
-    if (facultyName === '') {
-        // Hide the faculty details container if no faculty is selected
-        facultyDetailsContainer.style.display = 'none';
-        return;
-    }
-
-    // Make an AJAX request to fetch employee details based on selected values
-    axios.get(`/get-employee-details?engineeringCourses=${engineeringCourses}&facultyName=${facultyName}`)
-        .then(response => {
-            // Check if faculty details are available
-            if (response.data && Object.keys(response.data).length > 0) {
-                // Update the placeholders with response data
-                emp_id.innerText = response.data.temp_id;
-                dept.innerText = response.data.ENGINEERINGCOURSES;
-                facultyNamePlaceholder.innerText = response.data.facultyName;
-                dateOfJoining.innerText = response.data.dateOfJoining;
-                egspecExp.innerText = response.data.egspecExp;
-                otherCollegeExp.innerText = response.data.otherCollegeExp;
-                totalExp.innerText = response.data.totalExp;
-                salaryExp.innerText = response.data.salaryExp;
-                designation.innerText = response.data.designation;
-                ugCompleted.innerText = response.data.ugCompleted;
-                pgCompleted.innerText = response.data.pgCompleted;
-                phdStatus.innerText = response.data.phdStatus;
-
-                // Show the faculty details container
-                facultyDetailsContainer.style.display = 'block';
             } else {
-                // Hide the faculty details container if no details are available
-                facultyDetailsContainer.style.display = 'none';
-                // Handle case when no faculty details are available
-                swal('No faculty details available');
+                // Hide table if no course is selected and show no data message
+                $('#employeeTable').hide();
+                $('#noDataMessage').show();
             }
-        })
-        .catch(error => {
-            console.error(error);
-        });
-}
-
+        } catch (error) {
+            console.error('An error occurred: ' + error.message);
+            // Handle error by showing an error message
+            $('#employeeTable').hide();
+            $('#noDataMessage').text('An error occurred. Please try again later.').show();
+        }
+    }
 </script>
+
+
+
 
 
 @endsection

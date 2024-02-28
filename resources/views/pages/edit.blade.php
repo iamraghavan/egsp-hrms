@@ -14,13 +14,11 @@ function calculateAndDisplaySalaryExp() {
     if (!isNaN(egspecExp) && !isNaN(otherCollegeExp)) {
         // Calculate the total experience: EGSPEC + Other College Exp.
         let totalExp = egspecExp + otherCollegeExp;
-        let dividedValue = egspecExp + otherCollegeExp / 5;
+        let dividedValue = (egspecExp + otherCollegeExp) / 5;
 
         // Round the total experience to the nearest whole number
         let roundedTotalExp = Math.ceil(totalExp);
         let roundedDividedValue = Math.round(dividedValue);
-
-
 
         // Display the rounded total experience in the 'salaryExp' input
         document.getElementById('salaryExp').value = roundedDividedValue;
@@ -151,8 +149,6 @@ function generateEmployeeID() {
 @endif
 
 
-   
-
 
         <div class="page-body">
             <div class="container-fluid">
@@ -160,7 +156,7 @@ function generateEmployeeID() {
                 <div class="row">
                   <div class="col-sm-6 ps-0">
                     <h3>
-                       Add Employee
+                        Edit Employee Details | {{ $employee->temp_id ? $employee->temp_id : 'Loading....' }}
                     </h3>
                   </div>
                   <div class="col-sm-6 pe-0">
@@ -169,7 +165,7 @@ function generateEmployeeID() {
                           <svg class="stroke-icon">
                             <use href="../assets/svg/icon-sprite.svg#stroke-home"></use>
                           </svg></a></li>
-                      <li class="breadcrumb-item active">Add Employee</li>
+                      <li class="breadcrumb-item active">Edit Employee Details </li>
                     </ol>
                   </div>
                 </div>
@@ -192,30 +188,29 @@ function generateEmployeeID() {
                 <div class="col-sm-12">  
                   <div class="card">
                     <div class="card-body">
-                        
-                        <form action="{{ url('/add/employee') }}" method="POST">
 
-                            @csrf
+                
+                   <form action="/employee/update/{{$employee->temp_id}}" method="POST">
+    @csrf
+    @method('PUT')
                             <div class="form theme-form">
                                 <div class="row">
-                                    <div class="col">
-                                        <div class="mb-3">
-                                            <label for="tempID">Temporary Employee ID</label>
-                                            <input class="form-control" readonly type="text" id="tempID" name="temp_id" 
-                                            placeholder="Employee ID">
-                                        </div>
-                                    </div>
+                                   <input value={{ $employee->temp_id }} class="form-control" type="hidden"
+                                    id="tempID" name="temp_id" placeholder="Employee ID">
                                     <div class="col">
                                         <div class="mb-3">
                                             <label for="facultyName">Name of the Faculty</label>
-                                            <input class="form-control" type="text" id="facultyName" name="facultyName" placeholder="Name of the Faculty" oninput="convertToUpperCase(this)" onkeypress="validateInput(event)">
+                                            <input  value="{{ $employee->facultyName  }}"
+                                             class="form-control" type="text" 
+                                             id="facultyName" name="facultyName" placeholder="Name of the Faculty" oninput="convertToUpperCase(this)" onkeypress="validateInput(event)">
                                         </div>
+
                                     </div>
                                     <div class="col">
                                         <div class="mb-3">
                                             <label for="department">Department</label>
-                                            <select class="form-select" name="ENGINEERINGCOURSES" id="ENGINEERINGCOURSES" onchange="generateEmployeeID()">
-                                                <option value="" selected disabled>Select Engineering Course</option>
+                                            <select class="form-select"  name="ENGINEERINGCOURSES" id="ENGINEERINGCOURSES" onchange="generateEmployeeID()">
+                                                <option value="{{old('ENGINEERINGCOURSES', $employee->ENGINEERINGCOURSES )}}" selected disabled>{{$employee->ENGINEERINGCOURSES}}</option>
                                                 <optgroup label="B.E / B.Tech">
                                                     <option value="MECHANICAL">Mechanical Engineering (B.E / B.Tech)</option>
                                                     <option value="CIVIL">Civil Engineering (B.E / B.Tech)</option>
@@ -247,7 +242,7 @@ function generateEmployeeID() {
                                     <div class="col">
                                         <div class="mb-3">
                                             <label for="dateOfJoining">Date of Joining</label>
-                                            <input class="form-control" type="date" id="dateOfJoining" name="dateOfJoining" placeholder="DD-MM-YYYY">
+                                            <input class="form-control" value="{{ $employee->dateOfJoining  }}" type="date" id="dateOfJoining" name="dateOfJoining" placeholder="DD-MM-YYYY">
                                         </div>
                                         
                                         
@@ -256,13 +251,13 @@ function generateEmployeeID() {
                                     <div class="col">
                                         <div class="mb-3">
                                             <label for="egspecExp">EGSPEC Exp</label>
-                                            <input class="form-control" type="text" id="egspecExp" name="egspecExp" placeholder="EGSPEC Exp" oninput="calculateAndDisplaySalaryExp(); validateAndAlert(this)">
+                                            <input value="{{ $employee->egspecExp  }}" class="form-control" type="text" id="egspecExp" name="egspecExp" placeholder="EGSPEC Exp" oninput="calculateAndDisplaySalaryExp(); validateAndAlert(this)">
                                         </div>
                                     </div>
                                     <div class="col">
                                         <div class="mb-3">
                                             <label for="otherCollegeExp">Other College Exp</label>
-                                            <input class="form-control" type="text" id="otherCollegeExp" name="otherCollegeExp" placeholder="Other College Exp" oninput="calculateAndDisplaySalaryExp(); validateAndAlert(this)">
+                                            <input value="{{ $employee->otherCollegeExp  }}" class="form-control" type="text" id="otherCollegeExp" name="otherCollegeExp" placeholder="Other College Exp" oninput="calculateAndDisplaySalaryExp(); validateAndAlert(this)">
                                         </div>
                                     </div>
                                     
@@ -272,17 +267,17 @@ function generateEmployeeID() {
                                     <div class="col">
                                         <div class="mb-3">
                                             <label for="totalExp">Total Exp</label>
-                                            <input class="form-control" readonly  diabled type="text" id="totalExp" name="totalExp" placeholder="Total Exp">
+                                            <input value="{{ $employee->totalExp  }}" class="form-control" readonly  diabled type="text" id="totalExp" name="totalExp" placeholder="Total Exp">
                                         </div>
                                     </div>
                                     <div class="col">
                                         <div class="mb-3">
                                             <label for="salaryExp">Salary Experience</label>
-                                            <input class="form-control" readonly  type="text" id="salaryExp" name="salaryExp" placeholder="Salary Experience">
+                                            <input value="{{ $employee->salaryExp  }}" class="form-control" readonly  type="text" id="salaryExp" name="salaryExp" placeholder="Salary Experience">
                                         </div>
                                     </div>
 
-                                    <div class="col">
+                                                               <div class="col">
                                        <div class="mb-3">
     <label for="designation">Designation</label>
     <select class="form-select" id="designationid" name="designationID">
@@ -294,20 +289,11 @@ function generateEmployeeID() {
 </div>
 
                                     </div>
-                                     <div class="col">
-                                        <div class="mb-3">
-                                            <label for="phdStatus">No. of Research Papers</label>
-                                            <input class="form-control" type="number" id="researchPapers" name="researchPapers" placeholder="Ph.D. & Status">
-                                        </div>
-                                    </div>
 
-                                       <div style='display:none !important;' class="mb-3">
+                                       <div style="display:none !important;"  class="mb-3">
     <label for="ugCompleted">Designation</label>
     <input class="form-control" type="text" id="designation" name="designation" placeholder="" readonly>
 </div>
-
-
-
                                 </div>
                         
                                 <div class="row">
@@ -315,32 +301,30 @@ function generateEmployeeID() {
                                     <div class="col">
                                         <div class="mb-3">
                                             <label for="ugCompleted">UG & Completed</label>
-                                            <input class="form-control" type="text" id="ugCompleted" name="ugCompleted" placeholder="UG & Completed">
+                                            <input value="{{ $employee->ugCompleted  }}" class="form-control" type="text" id="ugCompleted" name="ugCompleted" placeholder="UG & Completed">
                                         </div>
                                     </div>
 
                                     <div class="col">
                                         <div class="mb-3">
                                             <label for="pgCompleted">PG & Completed</label>
-                                            <input class="form-control" type="text" id="pgCompleted" name="pgCompleted" placeholder="PG & Completed">
+                                            <input value="{{ $employee->pgCompleted  }}" class="form-control" type="text" id="pgCompleted" name="pgCompleted" placeholder="PG & Completed">
                                         </div>
                                     </div>
                                     <div class="col">
                                         <div class="mb-3">
                                             <label for="phdStatus">Ph.D. & Status</label>
-                                            <input class="form-control" type="text" id="phdStatus" name="phdStatus" placeholder="Ph.D. & Status">
+                                            <input  value="{{ $employee->phdStatus ? $employee->phdStatus : '' }}" class="form-control" type="text" id="phdStatus" name="phdStatus" placeholder="Ph.D. & Status">
                                         </div>
                                     </div>
-
-                                   
                                 </div>
                         
                               
                             
                         
                                 <div class="text-end">
-                                    <button type="submit" class="btn btn-success me-3">Submit</button>
-                                    <button type="button" class="btn btn-danger">Cancel</button>
+                                    <button type="submit" class="btn btn-primary me-3">Update Data</button>
+                                     <button type="button" class="btn btn-danger">Cancel</button>
                                 </div>
                             </div>
                         </form>
@@ -368,8 +352,7 @@ function generateEmployeeID() {
 
 <script>
 
-
-$(document).ready(function () {
+    $(document).ready(function () {
     $('#designationid').change(function () {
         // Get the selected designation title
         var selectedTitle = $('#designationid option:selected').text();

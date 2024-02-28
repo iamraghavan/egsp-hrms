@@ -23,8 +23,10 @@ class CreateEmployeesTable extends Migration
             $table->string('designation');
             $table->string('ugCompleted');
             $table->string('pgCompleted');
-            $table->string('phdStatus');
+            $table->string('phdStatus')->nullable();
+            $table->integer('researchPapers')->nullable();
             // Add any other columns you may need
+            $table->string('designationID');
             $table->timestamps();
         });
     }

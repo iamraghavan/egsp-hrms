@@ -17,6 +17,7 @@ return [
     */
 
     'name' => env('APP_NAME', 'Laravel'),
+    'footer_text' => 'EGS Pillay Group of Institutions - Nagapattinam',
 
     /*
     |--------------------------------------------------------------------------
@@ -159,7 +160,7 @@ return [
         'guard' => 'web',
         'passwords' => 'users',
     ],
-    
+
 
     'providers' => ServiceProvider::defaultProviders()->merge([
         /*
